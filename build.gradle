@@ -26,10 +26,7 @@ allprojects {
         google()
         jcenter()
         mavenCentral()
-        flatDir {
-            //所有的module的repositories下把library module中的libs目录添加到依赖关系中
-            dirs project(':qndroidimsdk').file('libs')
-        }
+
     }
 }
 

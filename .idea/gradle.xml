@@ -16,7 +16,6 @@
             <option value="$PROJECT_DIR$/lib/bzuiEmoji" />
             <option value="$PROJECT_DIR$/lib/bzuicomp_bottomInput" />
             <option value="$PROJECT_DIR$/lib/lib_network" />
-            <option value="$PROJECT_DIR$/qndroidimsdk" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />
