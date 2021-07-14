@@ -18,31 +18,6 @@ class WelComeReceiver : LifecycleObserver {
     private val mChatListener: BMXChatServiceListener = object : BMXChatServiceListener() {
 
         override fun onReceive(list: BMXMessageList) {
-//            GlobalScope.launch(Dispatchers.Main) {
-//                //收到消息
-//                for (i in 0 until list.size().toInt()) {
-//                    list[i]?.let {
-//                        val msg = JsonUtils.parseObject(it.content(), RtmTextMsg::class.java)
-//                            ?: return@launch
-//                        if (msg.action == PubChatWelCome.action_welcome) {
-//                            val pubChatMsgModel =
-//                                JsonUtils.parseObject(msg.msgStr, PubChatWelCome::class.java)
-//                                    ?:  return@launch
-//                            //GlobalScope.launch(Dispatchers.Main) {
-//                            PubChatMsgManager.onNewMsg(pubChatMsgModel)
-//                            // }
-//                        }
-//                        if (msg.action == PubChatQuitRoom.action_quit_room) {
-//                            val pubChatMsgModel =
-//                                JsonUtils.parseObject(msg.msgStr, PubChatQuitRoom::class.java)
-//                                    ?:  return@launch
-//                            // GlobalScope.launch(Dispatchers.Main) {
-//                            PubChatMsgManager.onNewMsg(pubChatMsgModel)
-//                            //  }
-//                        }
-//                    }
-//                }
-//            }
             //收到消息
             for (i in 0 until list.size().toInt()) {
                 list[i]?.let {

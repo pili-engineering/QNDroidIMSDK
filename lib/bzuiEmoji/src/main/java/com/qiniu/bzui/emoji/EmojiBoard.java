@@ -16,7 +16,6 @@ import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -174,7 +173,7 @@ public class EmojiBoard extends LinearLayout {
         }
     }
 
-    public  int dip2px(Context context, float dpValue) {
+    public int dip2px(Context context, float dpValue) {
         float scale = context.getResources().getDisplayMetrics().density;
         return (int) (dpValue * scale + 0.5f);
     }
@@ -201,7 +200,6 @@ public class EmojiBoard extends LinearLayout {
                 rootView.addView(imageView);
             }
         }
-
 
         public void setSelected(int position) {
             for (int i = 0; i < imageList.size(); i++) {

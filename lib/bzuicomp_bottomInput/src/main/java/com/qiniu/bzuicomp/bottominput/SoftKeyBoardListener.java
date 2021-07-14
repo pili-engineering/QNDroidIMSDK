@@ -12,7 +12,6 @@ public class SoftKeyBoardListener {
     int rootViewVisibleHeight;//纪录根视图的显示高度
     private OnSoftKeyBoardChangeListener onSoftKeyBoardChangeListener;
 
-
     private ViewTreeObserver.OnGlobalLayoutListener onGlobalLayoutListener = new ViewTreeObserver.OnGlobalLayoutListener() {
         @Override
         public void onGlobalLayout() {
@@ -67,9 +66,10 @@ public class SoftKeyBoardListener {
     public void setOnSoftKeyBoardChangeListener(OnSoftKeyBoardChangeListener onSoftKeyBoardChangeListener) {
         this.onSoftKeyBoardChangeListener = onSoftKeyBoardChangeListener;
     }
-    public void detach(){
+
+    public void detach() {
         rootView.getViewTreeObserver().removeOnGlobalLayoutListener(onGlobalLayoutListener);
-        onSoftKeyBoardChangeListener=null;
+        onSoftKeyBoardChangeListener = null;
     }
 
     public interface OnSoftKeyBoardChangeListener {
@@ -77,6 +77,5 @@ public class SoftKeyBoardListener {
 
         void keyBoardHide(int height);
     }
-
 
 }

@@ -12,13 +12,12 @@ import kotlinx.android.synthetic.main.dialog_room_input.*
 /**
  * 底部输入框
  */
-class RoomInputDialog(var type:Int = type_text) : FinalDialogFragment() {
+class RoomInputDialog(var type: Int = type_text) : FinalDialogFragment() {
 
-
-   companion object{
-       const val type_text=1
-       const val type_danmu=2
-   }
+    companion object {
+        const val type_text = 1
+        const val type_danmu = 2
+    }
 
     init {
         applyGravityStyle(Gravity.BOTTOM)
@@ -28,7 +27,7 @@ class RoomInputDialog(var type:Int = type_text) : FinalDialogFragment() {
     /**
      * 发消息拦截回调
      */
-    var sendPubCall: ((msg: String) -> Unit)?=null
+    var sendPubCall: ((msg: String) -> Unit)? = null
 
     // private val faceFragment by lazy { FaceFragment() }
     private val mSoftKeyBoardListener by lazy { SoftKeyBoardListener(requireActivity()) }
@@ -123,6 +122,4 @@ class RoomInputDialog(var type:Int = type_text) : FinalDialogFragment() {
         face_btn.isSelected = true
 
     }
-
-
 }

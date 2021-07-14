@@ -72,26 +72,28 @@ class MainActivity : AppCompatActivity() {
                     val json = JSONObject(roomInfo)
                     val mRoomName = json.optString("roomName")
 
-                    val body = "{\"group_id\":\"${mRoomName}\"}".toRequestBody("application/json".toMediaType())
-                    val response  = async<Response>(Dispatchers.IO) {
-                        val response= RetrofitManager.post("https://im-test.qiniuapi.com/v1/mock/group",body)
+                    val body =
+                        "{\"group_id\":\"${mRoomName}\"}".toRequestBody("application/json".toMediaType())
+                    val response = async<Response>(Dispatchers.IO) {
+                        val response =
+                            RetrofitManager.post("https://im-test.qiniuapi.com/v1/mock/group", body)
                         response
                     }.await()
 
                     val jsonStr = response.body?.string()
-                    Log.d("mRoomName","   jsonStr  "+ jsonStr)
+                    Log.d("mRoomName", "   jsonStr  " + jsonStr)
 
 
-                   if( response.code == 200){
-                       val json = JsonUtils.parseObject(jsonStr, HttpDate::class.java)?.data
-                       UserInfoManager.mIMGroup = json
-                       Log.d("mRoomName","   groupInfo.im_group_id  "+ json?.group_id)
-                       val intent = Intent(this@MainActivity, RoomActivity::class.java)
-                       intent.putExtra("roomToken", room_token_edit_text!!.text.toString())
-                       startActivity(intent)
-                   }else{
-                       "创建房间失败".asToast()
-                   }
+                    if (response.code == 200) {
+                        val json = JsonUtils.parseObject(jsonStr, HttpDate::class.java)?.data
+                        UserInfoManager.mIMGroup = json
+                        Log.d("mRoomName", "   groupInfo.im_group_id  " + json?.group_id)
+                        val intent = Intent(this@MainActivity, RoomActivity::class.java)
+                        intent.putExtra("roomToken", room_token_edit_text!!.text.toString())
+                        startActivity(intent)
+                    } else {
+                        "创建房间失败".asToast()
+                    }
                 } catch (e: Exception) {
                     e.printStackTrace()
                     e.message?.asToast()

@@ -47,11 +47,9 @@ class InputMsgReceiver : LifecycleObserver {
         //}
     }
 
-
     init {
         QNIMClient.getChatManager().addChatListener(mChatListener)
     }
-
 
     /**
      * 发公聊消息

@@ -25,7 +25,6 @@ class LoginActivity : AppCompatActivity() {
         initViewData()
     }
 
-
     fun signUpNewUser(name: String, pwd: String) {
         val mBMXUserProfile = BMXUserProfile()
         val signCode = QNIMClient.signUpNewUser(name, pwd, mBMXUserProfile)
@@ -35,7 +34,7 @@ class LoginActivity : AppCompatActivity() {
                 UserInfoManager.updateUserInfo(IMUser().apply {
                     im_password = pwd
                     im_username = name
-                    Log.d("signUpNewUser","mBMXUserProfile.userId() "+mBMXUserProfile.userId())
+                    Log.d("signUpNewUser", "mBMXUserProfile.userId() " + mBMXUserProfile.userId())
                     im_uid = mBMXUserProfile.userId()
                 })
                 val i = Intent(this@LoginActivity, MainActivity::class.java)

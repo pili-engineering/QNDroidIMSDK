@@ -18,7 +18,7 @@ class App : Application() {
         }
     }
 
-    val mBMXGroupServiceListener = object  : BMXGroupServiceListener() {
+    val mBMXGroupServiceListener = object : BMXGroupServiceListener() {
         override fun onMemberJoined(group: BMXGroup?, memberId: Long, inviter: Long) {
             super.onMemberJoined(group, memberId, inviter)
         }
@@ -30,10 +30,9 @@ class App : Application() {
 
         override fun onStatusChanged(msg: BMXMessage, error: BMXErrorCode) {
             super.onStatusChanged(msg, error)
-            Log.d("mjl","error code"+error.name+"  "+error.swigValue())
+            Log.d("mjl", "error code" + error.name + "  " + error.swigValue())
         }
     }
-
 
     override fun onCreate() {
         super.onCreate()
@@ -52,7 +51,7 @@ class App : Application() {
         )
         config.consoleOutput = true
         config.logLevel = BMXLogLevel.Debug
-        config.appID ="dxdjbunzmxiu"
+        config.appID = "dxdjbunzmxiu"
         config.setEnvironmentType(BMXPushEnvironmentType.Production)
 
         // 初始化BMXClient
@@ -64,7 +63,6 @@ class App : Application() {
 
         QNIMClient.getGroupManager().addGroupListener(mBMXGroupServiceListener)
         QNIMClient.getChatManager().addChatListener(mBMXChatServiceListener)
-
 
 // 初始化使用的第三方二维码扫描库，与 QNRTC 无关，请忽略
         ZXingLibrary.initDisplayOpinion(applicationContext)

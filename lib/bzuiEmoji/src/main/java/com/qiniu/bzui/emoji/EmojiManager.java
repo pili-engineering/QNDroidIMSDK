@@ -20,21 +20,21 @@ import java.util.logging.Handler;
 
 public class EmojiManager {
 
-    private  final String TAG = "EmojiManager";
+    private final String TAG = "EmojiManager";
 
-    private  Context gContext;
-    private  ArrayList<Integer> emojiCodeList = new ArrayList<>();
-    private  ArrayList<Integer> emojiResourceList = new ArrayList<>();
-
+    private Context gContext;
+    private ArrayList<Integer> emojiCodeList = new ArrayList<>();
+    private ArrayList<Integer> emojiResourceList = new ArrayList<>();
 
     private static EmojiManager emojiManager = null;
 
-    public static   EmojiManager  getInstance(Context context){
-        if(emojiManager==null){
-            emojiManager=new EmojiManager(context);
+    public static EmojiManager getInstance(Context context) {
+        if (emojiManager == null) {
+            emojiManager = new EmojiManager(context);
         }
         return emojiManager;
     }
+
     private EmojiManager(Context context) {
 
         gContext = context.getApplicationContext();
@@ -53,19 +53,19 @@ public class EmojiManager {
         array.recycle();
     }
 
-    public  int getSize() {
+    public int getSize() {
         return emojiCodeList.size();
     }
 
-    public  int getCode(int position) {
+    public int getCode(int position) {
         return emojiCodeList.get(position);
     }
 
-    public  List<Integer> getResourceList(int start, int count) {
+    public List<Integer> getResourceList(int start, int count) {
         return new ArrayList<>(emojiResourceList.subList(start, start + count));
     }
 
-    private  int getResourceByCode(int code) throws Resources.NotFoundException {
+    private int getResourceByCode(int code) throws Resources.NotFoundException {
         for (int i = 0; i < emojiCodeList.size(); i++) {
             if (emojiCodeList.get(i) == code) {
                 return emojiResourceList.get(i);
@@ -74,7 +74,7 @@ public class EmojiManager {
         throw new Resources.NotFoundException("Unsupported emoji code <" + code + ">, which is not in Emoji list.");
     }
 
-    public  CharSequence parse(String text, int textSize) {
+    public CharSequence parse(String text, int textSize) {
         if (text == null) {
             return "";
         }
@@ -110,7 +110,7 @@ public class EmojiManager {
         return ssb;
     }
 
-    private  class CenterImageSpan extends ImageSpan {
+    private class CenterImageSpan extends ImageSpan {
 
         public CenterImageSpan(Drawable draw) {
             super(draw);

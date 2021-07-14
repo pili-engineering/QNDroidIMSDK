@@ -32,7 +32,6 @@ class PubChatView : FrameLayout, LifecycleObserver {
         chatRecy.layoutManager = LinearLayoutManager(context)
     }
 
-
     fun setAdapter(chatAdapter: BaseQuickAdapter<IChatMsg, BaseViewHolder> = PubChatAdapter()) {
         adapter = chatAdapter
         chatRecy.adapter = adapter

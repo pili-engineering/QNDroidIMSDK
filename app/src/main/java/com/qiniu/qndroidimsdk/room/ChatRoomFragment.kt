@@ -23,12 +23,11 @@ import kotlinx.coroutines.launch
 
 class ChatRoomFragment : Fragment() {
 
-
-    private val mInputMsgReceiver  by lazy {
+    private val mInputMsgReceiver by lazy {
         InputMsgReceiver()
     }
 
-    private val mWelComeReceiver  by lazy {
+    private val mWelComeReceiver by lazy {
         WelComeReceiver()
     }
 
@@ -40,16 +39,12 @@ class ChatRoomFragment : Fragment() {
         return layoutInflater.inflate(R.layout.chat_fragment, container, false)
     }
 
-
-
-
     override fun onStart() {
         super.onStart()
         pubChatView.setAdapter(PubChatAdapter())
         lifecycle.addObserver(mWelComeReceiver)
         lifecycle.addObserver(mInputMsgReceiver)
         lifecycle.addObserver(pubChatView)
-
 
         buttonSend.setOnClickListener {
             RoomInputDialog()
@@ -60,7 +55,6 @@ class ChatRoomFragment : Fragment() {
                 }
                 .show(childFragmentManager, "RoomInputDialog")
         }
-
         Log.d(
             "mRoomName",
             " 加入聊天  groupInfo.im_group_id  " + UserInfoManager.mIMGroup!!.im_group_id
@@ -69,7 +63,7 @@ class ChatRoomFragment : Fragment() {
             UserInfoManager.mIMGroup!!.im_group_id
         ) { p0 ->
             if (p0 == BMXErrorCode.NoError || p0 == BMXErrorCode.GroupMemberExist) {
-              //  "加入聊天室成功".asToast()
+                //  "加入聊天室成功".asToast()
                 Log.d("mRoomName", " 加入聊天  加入聊天室成功  " + UserInfoManager.mIMGroup!!.im_group_id)
                 lifecycleScope.launch {
                     delay(1000)
@@ -84,7 +78,7 @@ class ChatRoomFragment : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         mWelComeReceiver.sendQuitMsg()
-        QNIMClient.getChatRoomManager().leave(UserInfoManager.mIMGroup!!.im_group_id){
+        QNIMClient.getChatRoomManager().leave(UserInfoManager.mIMGroup!!.im_group_id) {
         }
     }
 }

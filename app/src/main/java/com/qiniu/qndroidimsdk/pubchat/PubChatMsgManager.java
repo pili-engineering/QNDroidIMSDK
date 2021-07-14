@@ -2,7 +2,6 @@ package com.qiniu.qndroidimsdk.pubchat;
 
 public class PubChatMsgManager {
 
-
     protected static IChatMsgCall iChatMsgCall = null;
 
     public static void onNewMsg(IChatMsg msg) {

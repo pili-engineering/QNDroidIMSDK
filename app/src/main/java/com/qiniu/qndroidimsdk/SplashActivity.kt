@@ -34,11 +34,14 @@ class SplashActivity : AppCompatActivity() {
                 startActivity(i)
                 return@launch
             }
-            val code = QNIMClient.fastSignInByName(UserInfoManager.mIMUser!!.im_username,UserInfoManager.mIMUser!!.im_password)
-            if(code == BMXErrorCode.NoError){
-                val i = Intent(this@SplashActivity,MainActivity::class.java)
+            val code = QNIMClient.fastSignInByName(
+                UserInfoManager.mIMUser!!.im_username,
+                UserInfoManager.mIMUser!!.im_password
+            )
+            if (code == BMXErrorCode.NoError) {
+                val i = Intent(this@SplashActivity, MainActivity::class.java)
                 startActivity(i)
-            }else{
+            } else {
                 val i = Intent(this@SplashActivity, LoginActivity::class.java)
                 startActivity(i)
             }

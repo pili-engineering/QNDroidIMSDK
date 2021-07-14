@@ -8,7 +8,6 @@ public class LoginToken implements Serializable {
     private String loginToken;
     private String accountId;
 
-
     public String getLoginToken() {
         return loginToken;
     }

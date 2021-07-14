@@ -39,7 +39,6 @@ object RetrofitManager {
         return retrofit.create(service)
     }
 
-
     fun post(url: String, body: RequestBody): Response {
         val request = Request.Builder()
             .url(url)
@@ -48,6 +47,7 @@ object RetrofitManager {
         val call = okHttp.newCall(request);
         return call.execute()
     }
+
     fun get(url: String): Response {
         val request = Request.Builder()
             .url(url)
