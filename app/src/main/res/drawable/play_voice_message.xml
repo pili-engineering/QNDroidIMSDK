@@ -1,0 +1,7 @@
+<animation-list xmlns:android="http://schemas.android.com/apk/res/android" android:oneshot="false">
+
+    <item android:drawable="@drawable/talk_icon_right_2" android:duration="400"/>
+    <item android:drawable="@drawable/talk_icon_right_1" android:duration="400"/>
+    <item android:drawable="@drawable/talk_icon_right_0" android:duration="400"/>
+
+</animation-list>

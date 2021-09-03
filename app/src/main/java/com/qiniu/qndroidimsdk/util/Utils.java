@@ -1,7 +1,13 @@
 package com.qiniu.qndroidimsdk.util;
 
 
+import android.app.Activity;
+import android.database.Cursor;
+import android.net.Uri;
+import android.provider.MediaStore;
 import android.util.Base64;
+
+import androidx.loader.content.CursorLoader;
 
 
 public final class Utils {
@@ -15,7 +21,5 @@ public final class Utils {
             return null;
         }
     }
-
-
 
 }

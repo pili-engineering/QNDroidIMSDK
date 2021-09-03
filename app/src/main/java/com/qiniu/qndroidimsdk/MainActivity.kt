@@ -36,9 +36,12 @@ import org.json.JSONObject
 class MainActivity : AppCompatActivity() {
 
     var token1 =
-        "QxZugR8TAhI38AiJ_cptTl3RbzLyca3t-AAiH-Hh:GwzC49F8kBR4uyfSVYNODT2dPGM=:eyJhcHBJZCI6ImQ4ZHJlOHcxcCIsImV4cGlyZUF0IjoxNjI3NjU1MzgyLCJwZXJtaXNzaW9uIjoidXNlciIsInJvb21OYW1lIjoicXdlMTIiLCJ1c2VySWQiOiIxMjMifQ=="
+        "QxZugR8TAhI38AiJ_cptTl3RbzLyca3t-AAiH-Hh:srRQTXJzBogXrXVMq-FUSOdER3c=:eyJhcHBJZCI6ImQ4ZHJlOHcxcCIsImV4cGlyZUF0IjoxNjYxNTcxNzAzLCJwZXJtaXNzaW9uIjoidXNlciIsInJvb21OYW1lIjoiMTIzIiwidXNlcklkIjoiMTIzMzMifQ=="
+
+    //debug "QxZugR8TAhI38AiJ_cptTl3RbzLyca3t-AAiH-Hh:HX9jtooyqlqyq0iN9ERM2H-i1S0=:eyJhcHBJZCI6ImQ4ZHJlOHcxcCIsImV4cGlyZUF0IjoxNjI3NzA0NDA0LCJwZXJtaXNzaW9uIjoidXNlciIsInJvb21OYW1lIjoiMTIzNCIsInVzZXJJZCI6ImFkc2FkYWRhZCJ9"
     var token2 =
-        "QxZugR8TAhI38AiJ_cptTl3RbzLyca3t-AAiH-Hh:Tj2or5C0y3suQ_WXqnZUB7BtrXU=:eyJhcHBJZCI6ImQ4ZHJlOHcxcCIsImV4cGlyZUF0IjoxNjI3NzQxODE5LCJwZXJtaXNzaW9uIjoidXNlciIsInJvb21OYW1lIjoicXdlMTIiLCJ1c2VySWQiOiJzeGRhc2QifQ=="
+        "QxZugR8TAhI38AiJ_cptTl3RbzLyca3t-AAiH-Hh:yvaLyhyuhN54013ESzodkpxJ0BI=:eyJhcHBJZCI6ImQ4ZHJlOHcxcCIsImV4cGlyZUF0IjoxNjYxNTcxNzAzLCJwZXJtaXNzaW9uIjoidXNlciIsInJvb21OYW1lIjoiMTIzIiwidXNlcklkIjoiMTJlcWUifQ=="
+    // "QxZugR8TAhI38AiJ_cptTl3RbzLyca3t-AAiH-Hh:9ifJL3qnKSTAwuA1iPmDuOgnkRY=:eyJhcHBJZCI6ImQ4ZHJlOHcxcCIsImV4cGlyZUF0IjoxNjI3NzA0NDYwLCJwZXJtaXNzaW9uIjoidXNlciIsInJvb21OYW1lIjoiMTIzNCIsInVzZXJJZCI6ImFkc2Fkc2Fkc2EifQ=="
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,28 +75,26 @@ class MainActivity : AppCompatActivity() {
                     val json = JSONObject(roomInfo)
                     val mRoomName = json.optString("roomName")
 
-                    val body =
-                        "{\"group_id\":\"${mRoomName}\"}".toRequestBody("application/json".toMediaType())
-                    val response = async<Response>(Dispatchers.IO) {
-                        val response =
-                            RetrofitManager.post("https://im-test.qiniuapi.com/v1/mock/group", body)
+                    val body = "{\"group_id\":\"${mRoomName}\"}".toRequestBody("application/json".toMediaType())
+                    val response  = async<Response>(Dispatchers.IO) {
+                        val response= RetrofitManager.post("https://im-test.qiniuapi.com/v1/mock/group",body)
                         response
                     }.await()
 
                     val jsonStr = response.body?.string()
-                    Log.d("mRoomName", "   jsonStr  " + jsonStr)
+                    Log.d("mRoomName","   jsonStr  "+ jsonStr)
 
 
-                    if (response.code == 200) {
-                        val json = JsonUtils.parseObject(jsonStr, HttpDate::class.java)?.data
-                        UserInfoManager.mIMGroup = json
-                        Log.d("mRoomName", "   groupInfo.im_group_id  " + json?.group_id)
-                        val intent = Intent(this@MainActivity, RoomActivity::class.java)
-                        intent.putExtra("roomToken", room_token_edit_text!!.text.toString())
-                        startActivity(intent)
-                    } else {
-                        "创建房间失败".asToast()
-                    }
+                   if( response.code == 200){
+                       val json = JsonUtils.parseObject(jsonStr, HttpDate::class.java)?.data
+                       UserInfoManager.mIMGroup = json
+                       Log.d("mRoomName","   groupInfo.im_group_id  "+ json?.group_id)
+                       val intent = Intent(this@MainActivity, RoomActivity::class.java)
+                       intent.putExtra("roomToken", room_token_edit_text!!.text.toString())
+                       startActivity(intent)
+                   }else{
+                       "创建房间失败".asToast()
+                   }
                 } catch (e: Exception) {
                     e.printStackTrace()
                     e.message?.asToast()

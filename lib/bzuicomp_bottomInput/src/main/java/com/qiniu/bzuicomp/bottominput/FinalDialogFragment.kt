@@ -11,6 +11,7 @@ import java.lang.reflect.Field
 
 abstract class FinalDialogFragment : DialogFragment() {
 
+
     var mDefaultListener: BaseDialogListener? = null
     private val INVALID_LAYOUT_ID = -1
 
@@ -18,7 +19,6 @@ abstract class FinalDialogFragment : DialogFragment() {
     private var mGravityEnum: Int = Gravity.CENTER
 
     private var mdimAmount = -1.0f
-
     @StyleRes
     private var animationStyleresId: Int? = null
 
@@ -26,6 +26,7 @@ abstract class FinalDialogFragment : DialogFragment() {
         mDefaultListener = defaultListener
         return this
     }
+
 
     fun applyCancelable(cancelable: Boolean): FinalDialogFragment {
         mCancelable = cancelable
@@ -42,10 +43,11 @@ abstract class FinalDialogFragment : DialogFragment() {
         return this
     }
 
-    fun applyDimAmount(dimAmount: Float): FinalDialogFragment {
+    fun applyDimAmount(dimAmount:Float): FinalDialogFragment {
         mdimAmount = dimAmount
         return this
     }
+
 
     /** The system calls this to get the DialogFragment's layout, regardless
      * of whether it's being displayed as a dialog or an embedded fragment.  */
@@ -64,18 +66,20 @@ abstract class FinalDialogFragment : DialogFragment() {
         return rootView
     }
 
+
     override fun onStart() {
         super.onStart()
         //STYLE_NO_FRAME设置之后会调至无法自动点击外部自动消失，因此添加手动控制
         dialog?.setCanceledOnTouchOutside(true)
         dialog?.window?.applyGravityStyle(mGravityEnum, animationStyleresId)
-        if (mdimAmount >= 0) {
+        if(mdimAmount>=0){
             val window = dialog!!.window
             val windowParams: WindowManager.LayoutParams = window!!.attributes
-            windowParams.dimAmount = mdimAmount
+            windowParams . dimAmount =mdimAmount
             window.attributes = windowParams
         }
     }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -114,6 +118,7 @@ abstract class FinalDialogFragment : DialogFragment() {
 
     abstract fun getViewLayoutId(): Int
 
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         init()
@@ -121,11 +126,11 @@ abstract class FinalDialogFragment : DialogFragment() {
 
     abstract fun init()
 
+
     override fun dismiss() {
         super.dismiss()
         mDefaultListener?.onDismiss(this)
     }
-
     open class BaseDialogListener {
         /**
          * 点击确定，并携带指定类型参数
@@ -144,5 +149,6 @@ abstract class FinalDialogFragment : DialogFragment() {
 
         open fun onDismiss(dialog: androidx.fragment.app.DialogFragment) {}
     }
+
 
 }
