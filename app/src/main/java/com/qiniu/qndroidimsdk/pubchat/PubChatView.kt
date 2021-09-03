@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 import com.qiniu.qndroidimsdk.R
+import com.qiniu.qndroidimsdk.pubchat.msg.RtmMessage
 import kotlinx.android.synthetic.main.view_bzui_pubchat.view.*
 
 /**
@@ -18,7 +19,7 @@ import kotlinx.android.synthetic.main.view_bzui_pubchat.view.*
  */
 class PubChatView : FrameLayout, LifecycleObserver {
 
-    private var adapter: BaseQuickAdapter<IChatMsg, BaseViewHolder> = PubChatAdapter()
+    private var adapter: BaseQuickAdapter<RtmMessage, BaseViewHolder> = PubChatAdapter()
 
     constructor(context: Context) : this(context, null)
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
@@ -30,21 +31,32 @@ class PubChatView : FrameLayout, LifecycleObserver {
         val view = LayoutInflater.from(context).inflate(R.layout.view_bzui_pubchat, this, false)
         addView(view)
         chatRecy.layoutManager = LinearLayoutManager(context)
-    }
-
-    fun setAdapter(chatAdapter: BaseQuickAdapter<IChatMsg, BaseViewHolder> = PubChatAdapter()) {
-        adapter = chatAdapter
         chatRecy.adapter = adapter
     }
+
+
 
     fun onRoomLeaving() {
         adapter.data.clear()
         adapter.notifyDataSetChanged()
     }
 
-    private var mIChatMsgCall = PubChatMsgManager.IChatMsgCall {
-        adapter.addData(it)
-        chatRecy.smoothScrollToPosition(adapter.data.size - 1)
+    private var mIChatMsgCall = object :  PubChatMsgManager.IChatMsgCall {
+        override fun onNewMsg(msg: RtmMessage?) {
+            adapter.addData(msg!!)
+            chatRecy.smoothScrollToPosition(adapter.data.size - 1)
+        }
+
+        override fun onMsgAttachmentStatusChanged( msgId:String, percent: Int) {
+            adapter.data.forEachIndexed { index, rtmMessage ->
+                if(rtmMessage.msgId==msgId){
+                    rtmMessage.attachmentProcess=percent
+                    if(percent>=100){
+                        adapter.notifyItemChanged(index)
+                    }
+                }
+            }
+        }
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)

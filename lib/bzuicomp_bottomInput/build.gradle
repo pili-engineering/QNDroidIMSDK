@@ -39,7 +39,7 @@ dependencies {
     implementation depend.corektx()
     implementation depend.appcompat()
     implementation depend.design()
-
+    implementation 'com.github.MJLblabla:hapiMediaPicker:1.0.5'
     implementation project(":lib:bzuiEmoji")
 
     testImplementation 'junit:junit:4.+'

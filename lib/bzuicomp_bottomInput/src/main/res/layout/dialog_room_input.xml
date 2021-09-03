@@ -31,7 +31,7 @@
             android:layout_marginStart="5dp"
             android:layout_marginEnd="5dp"
             android:scaleType="fitXY"
-            android:visibility="gone"
+            android:visibility="visible"
             android:src="@drawable/action_audio_selector" />
 
         <com.qiniu.bzuicomp.bottominput.TIMMentionEditText
@@ -51,16 +51,18 @@
             android:paddingStart="5dp"
             />
 
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/chat_voice_input"
-            style="?android:attr/borderlessButtonStyle"
             android:layout_width="0dp"
-            android:layout_height="36dp"
+            android:layout_height="32dp"
+            android:paddingTop="2dp"
+            android:paddingBottom="2dp"
             android:layout_marginStart="5dp"
             android:layout_marginEnd="5dp"
             android:layout_weight="1"
             android:background="@drawable/voice_btn_selector"
-            android:text="hold to talk "
+            android:text="按住说话 "
+            android:gravity="center"
             android:textColor="#696969"
             android:visibility="gone" />
 
@@ -81,7 +83,7 @@
             android:layout_marginStart="5dp"
             android:layout_marginEnd="5dp"
             android:scaleType="fitXY"
-            android:visibility="gone"
+            android:visibility="visible"
             android:src="@drawable/action_more_selector" />
 
         <TextView
@@ -107,6 +109,26 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="gone" />
+
+    <LinearLayout
+        android:id="@+id/llMore"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:orientation="horizontal"
+        android:layout_height="wrap_content">
+        <Button
+            android:id="@+id/btnSendImg"
+            android:text="图片"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <Button
+            android:visibility="gone"
+            android:id="@+id/btnTakePhoto"
+            android:text="拍照"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
 
 </LinearLayout>
 

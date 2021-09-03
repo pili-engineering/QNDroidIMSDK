@@ -12,24 +12,21 @@ import com.qiniu.droid.imsdk.QNIMClient
 import com.qiniu.qndroidimsdk.R
 import com.qiniu.qndroidimsdk.UserInfoManager
 import com.qiniu.qndroidimsdk.pubchat.InputMsgReceiver
-import com.qiniu.qndroidimsdk.pubchat.PubChatAdapter
-import com.qiniu.qndroidimsdk.pubchat.WelComeReceiver
-import im.floo.floolib.BMXChatServiceListener
 import im.floo.floolib.BMXErrorCode
-import im.floo.floolib.BMXMessageList
 import kotlinx.android.synthetic.main.chat_fragment.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class ChatRoomFragment : Fragment() {
 
+
     private val mInputMsgReceiver by lazy {
-        InputMsgReceiver()
+        InputMsgReceiver(requireContext())
     }
 
-    private val mWelComeReceiver by lazy {
-        WelComeReceiver()
-    }
+//    private val mWelComeReceiver by lazy {
+//        WelComeReceiver()
+//    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -39,22 +36,27 @@ class ChatRoomFragment : Fragment() {
         return layoutInflater.inflate(R.layout.chat_fragment, container, false)
     }
 
-    override fun onStart() {
-        super.onStart()
-        pubChatView.setAdapter(PubChatAdapter())
-        lifecycle.addObserver(mWelComeReceiver)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
         lifecycle.addObserver(mInputMsgReceiver)
         lifecycle.addObserver(pubChatView)
-
         buttonSend.setOnClickListener {
             RoomInputDialog()
                 .apply {
-                    sendPubCall = { msgEdit ->
+                    sendPubTextCall = { msgEdit ->
                         mInputMsgReceiver.buildMsg(msgEdit)
+                    }
+                    sendImgCall = {
+                        mInputMsgReceiver.buildImgMsg(it)
+                    }
+                    sendVoiceCall = {
+                        mInputMsgReceiver.buildVoiceMsg(it)
                     }
                 }
                 .show(childFragmentManager, "RoomInputDialog")
         }
+
         Log.d(
             "mRoomName",
             " 加入聊天  groupInfo.im_group_id  " + UserInfoManager.mIMGroup!!.im_group_id
@@ -67,7 +69,7 @@ class ChatRoomFragment : Fragment() {
                 Log.d("mRoomName", " 加入聊天  加入聊天室成功  " + UserInfoManager.mIMGroup!!.im_group_id)
                 lifecycleScope.launch {
                     delay(1000)
-                    mWelComeReceiver.sendEnterMsg()
+                    mInputMsgReceiver.sendEnterMsg()
                 }
             } else {
                 Log.d("mRoomName", " 加入聊天    加入聊天室失  " + UserInfoManager.mIMGroup!!.im_group_id)
@@ -77,7 +79,7 @@ class ChatRoomFragment : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        mWelComeReceiver.sendQuitMsg()
+        mInputMsgReceiver.sendQuitMsg()
         QNIMClient.getChatRoomManager().leave(UserInfoManager.mIMGroup!!.im_group_id) {
         }
     }

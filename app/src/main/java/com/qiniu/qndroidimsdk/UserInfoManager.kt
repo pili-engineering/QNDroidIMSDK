@@ -16,6 +16,7 @@ object UserInfoManager {
 
     private var uid = ""
 
+
     fun init() {
         mIMUser = JsonUtils.parseObject(
             SpUtil.get(SPConstant.User.SpName)?.readString(
@@ -23,8 +24,10 @@ object UserInfoManager {
             ) ?: "",
             IMUser::class.java
         ) as IMUser?
-        uid = mIMUser?.im_uid?.toString() ?: ""
+        uid = mIMUser?.im_uid?.toString()?:""
     }
+
+
 
     /**
      * 快捷获取　uid
@@ -33,8 +36,9 @@ object UserInfoManager {
         return uid
     }
 
+
     fun updateUserInfo(userInfo: IMUser) {
-        uid = mIMUser?.im_uid?.toString() ?: ""
+        uid = mIMUser?.im_uid?.toString()?:""
         mIMUser = userInfo
         saveUserInfoToSp()
     }
@@ -47,9 +51,12 @@ object UserInfoManager {
         }
     }
 
-    fun onLogout(toastStr: String = "") {}
 
-    fun clearUser() {
+    fun onLogout(toastStr:String="") {
+
+    }
+
+    fun clearUser(){
         SpUtil.get(SPConstant.User.SpName).clear()
         uid = ""
         mIMUser = null

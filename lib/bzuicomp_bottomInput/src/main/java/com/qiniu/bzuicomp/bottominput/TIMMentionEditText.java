@@ -105,7 +105,7 @@ public class TIMMentionEditText extends androidx.appcompat.widget.AppCompatEditT
             while (matcher.find()) {
                 String mentionText = matcher.group();
                 if (excludeMentionCharacter) {
-                    mentionText = mentionText.substring(1, mentionText.length() - 1);
+                    mentionText = mentionText.substring(1, mentionText.length()-1);
                 }
                 if (!mentionList.contains(mentionText)) {
                     mentionList.add(mentionText);
@@ -188,6 +188,7 @@ public class TIMMentionEditText extends androidx.appcompat.widget.AppCompatEditT
         return null;
     }
 
+
     private class MentionTextWatcher implements TextWatcher {
         @Override
         public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -209,6 +210,7 @@ public class TIMMentionEditText extends androidx.appcompat.widget.AppCompatEditT
         public void afterTextChanged(Editable editable) {
         }
     }
+
 
     private class HackInputConnection extends InputConnectionWrapper {
         private EditText editText;
@@ -287,4 +289,5 @@ public class TIMMentionEditText extends androidx.appcompat.widget.AppCompatEditT
     public interface OnMentionInputListener {
         void onMentionCharacterInput(String tag);
     }
+
 }

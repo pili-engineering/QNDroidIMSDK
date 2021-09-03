@@ -1,6 +1,6 @@
 package com.qiniu.qndroidimsdk.pubchat
 
-class InterviewRoomTipMsg(val msgContent: String) : IChatMsg {
+class InterviewRoomTipMsg(val msgContent:String) : IChatMsg {
     /**
      * 返回 html格式公屏样式
      */

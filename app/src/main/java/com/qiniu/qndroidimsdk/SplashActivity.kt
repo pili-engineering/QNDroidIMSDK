@@ -1,6 +1,7 @@
 package com.qiniu.qndroidimsdk
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -16,35 +17,40 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 class SplashActivity : AppCompatActivity() {
+    @SuppressLint("CheckResult")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
         ivAd.setImageResource(R.drawable.spl_bg)
         RxPermissions(this).request(
             Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE
-        ).subscribe {}
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                    Manifest.permission.CAMERA,
+            Manifest.permission.RECORD_AUDIO
+        ).doFinally {
+            lifecycleScope.launch(Dispatchers.Main) {
 
-        lifecycleScope.launch(Dispatchers.Main) {
+                if (UserInfoManager.getUserId().isEmpty() || (UserInfoManager.mIMUser?.im_username
+                        ?: "").isEmpty()
+                ) {
+                    val i = Intent(this@SplashActivity, LoginActivity::class.java)
+                    startActivity(i)
+                    return@launch
+                }
+                val code = QNIMClient.fastSignInByName(UserInfoManager.mIMUser!!.im_username,UserInfoManager.mIMUser!!.im_password)
+                if(code == BMXErrorCode.NoError){
+                    val i = Intent(this@SplashActivity,MainActivity::class.java)
+                    startActivity(i)
+                }else{
+                    val i = Intent(this@SplashActivity, LoginActivity::class.java)
+                    startActivity(i)
+                }
+            }
 
-            if (UserInfoManager.getUserId().isEmpty() || (UserInfoManager.mIMUser?.im_username
-                    ?: "").isEmpty()
-            ) {
-                val i = Intent(this@SplashActivity, LoginActivity::class.java)
-                startActivity(i)
-                return@launch
-            }
-            val code = QNIMClient.fastSignInByName(
-                UserInfoManager.mIMUser!!.im_username,
-                UserInfoManager.mIMUser!!.im_password
-            )
-            if (code == BMXErrorCode.NoError) {
-                val i = Intent(this@SplashActivity, MainActivity::class.java)
-                startActivity(i)
-            } else {
-                val i = Intent(this@SplashActivity, LoginActivity::class.java)
-                startActivity(i)
-            }
+        }
+            .subscribe {
+
+
         }
     }
 }

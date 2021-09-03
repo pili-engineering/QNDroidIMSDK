@@ -35,7 +35,7 @@ public class PubChatMsgModel implements IChatMsg, Serializable {
     @NotNull
     @Override
     public String getMsgHtml() {
-        return   " <font color='#3ce1ff'>"+senderName+"</font>"+ " <font color='#ffb83c'>"+  " :"+msgContent+"</font>";
+        return   "<font color='#ffb83c'>"+  " :"+msgContent+"</font>";
     }
     @JSONField(serialize = false)
     @NotNull

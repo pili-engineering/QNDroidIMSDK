@@ -1,14 +1,23 @@
 package com.qiniu.qndroidimsdk.pubchat.msg;
 
-public interface RtmMessage {
+import im.floo.floolib.BMXMessage;
+
+abstract public class RtmMessage {
 
     /**
      * 获得消息类型
      */
-    public MsgType getMsgType();
+    abstract public MsgType getMsgType();
 
     /**
      * 获得信令码
      */
-    public String getAction();
+    abstract public String getAction();
+
+    public String msgId;
+    public String sendImId;
+    public String sendImName;
+    public String toImId;
+    public int attachmentProcess=-1;
+
 }

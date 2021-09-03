@@ -6,7 +6,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
 
-public class RtmTextMsg implements RtmMessage , Serializable {
+import im.floo.floolib.BMXMessage;
+
+public class RtmTextMsg extends RtmMessage implements Serializable {
 
 
     private String action="";
@@ -45,4 +47,6 @@ public class RtmTextMsg implements RtmMessage , Serializable {
     public String getAction() {
         return action;
     }
+
+
 }
