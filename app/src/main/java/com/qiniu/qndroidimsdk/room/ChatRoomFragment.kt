@@ -12,7 +12,11 @@ import com.qiniu.droid.imsdk.QNIMClient
 import com.qiniu.qndroidimsdk.R
 import com.qiniu.qndroidimsdk.UserInfoManager
 import com.qiniu.qndroidimsdk.pubchat.InputMsgReceiver
+import im.floo.BMXDataCallBack
+import im.floo.floolib.BMXConversation
+import im.floo.floolib.BMXConversationList
 import im.floo.floolib.BMXErrorCode
+import im.floo.floolib.BMXMessageList
 import kotlinx.android.synthetic.main.chat_fragment.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -55,6 +59,42 @@ class ChatRoomFragment : Fragment() {
                     }
                 }
                 .show(childFragmentManager, "RoomInputDialog")
+
+
+//            QNIMClient.getChatManager().getAllConversations(object :
+//                BMXDataCallBack<BMXConversationList> {
+//                override fun onResult(p0: BMXErrorCode?, p1: BMXConversationList) {
+//                    for (i in 0..p1.size()){
+//
+//                    }
+//                }
+//            })
+
+            QNIMClient.getChatManager().openConversation(UserInfoManager.mIMGroup!!.im_group_id,
+                BMXConversation.Type.Group,
+                false,
+                object : BMXDataCallBack<BMXConversation> {
+                    override fun onResult(p0: BMXErrorCode?, p1: BMXConversation?) {
+                        QNIMClient.getChatManager().retrieveHistoryMessages(p1, 0, 100,
+                            object : BMXDataCallBack<BMXMessageList> {
+                                override fun onResult(p0: BMXErrorCode?, msgs: BMXMessageList?) {
+                                    val size =msgs?.size()?:return;
+                                    Log.d("mjl","retrieveHistoryMessages"+size)
+                                    if(size<=0){
+                                        return
+                                    }
+                                    for (i in 0 until size.toInt()) {
+                                        val msg =  msgs[i]
+                                        msg.fromId() //来自谁
+                                        msg.attachment()
+                                        msg.content()
+                                    }
+                                }
+                            })
+                    }
+
+                }
+            )
         }
 
         Log.d(
