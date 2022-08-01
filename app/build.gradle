@@ -42,7 +42,7 @@ dependencies {
 
     api 'com.github.tbruyelle:rxpermissions:0.10.2'
    // implementation project(":qndroidimsdk")
-    implementation (name:'qndroid-imsdk-1.0.6',ext:"aar")
+    implementation (name:'qndroid-imsdk-1.0.7',ext:"aar")
 
     implementation project(':lib:lib_network')
     implementation project(':lib:bzuicomp_bottomInput')
