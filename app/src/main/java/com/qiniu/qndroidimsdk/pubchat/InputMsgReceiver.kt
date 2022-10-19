@@ -33,10 +33,6 @@ class InputMsgReceiver(val context: Context) : LifecycleObserver {
 
         override fun onStatusChanged(msg: BMXMessage?, error: BMXErrorCode?) {
             super.onStatusChanged(msg, error)
-            Log.d(
-                "mjl",
-                "${msg?.msgId()} ${msg?.attachment()?.type()}  ${error?.name} ${error?.swigValue()}"
-            )
         }
 
         override fun onAttachmentStatusChanged(
