@@ -1,8 +1,12 @@
 package com.qiniu.qndroidimsdk
 
 import android.app.Application
+import android.content.pm.PackageManager
 import android.util.Log
+import com.qiniu.bzcomp.network.QiniuJsonFactor
+import com.qiniu.bzcomp.network.QiniuRequestInterceptor
 import com.qiniu.droid.imsdk.QNIMClient
+import com.qiniu.network.Form2JsonInterceptor
 import com.qiniu.network.NetConfig
 import com.qiniu.network.RetrofitManager
 import com.qiniu.qndroidimsdk.util.AppCache
@@ -17,9 +21,6 @@ class App : Application() {
             System.loadLibrary("floo")
         }
     }
-
-
-
 
     override fun onCreate() {
         super.onCreate()
@@ -44,8 +45,16 @@ class App : Application() {
         // 初始化BMXClient
         QNIMClient.init(config)
         UserInfoManager.init()
+        QiniuRequestInterceptor.appVersionName = packageManager.getPackageInfo(
+            packageName,
+            PackageManager.GET_CONFIGURATIONS
+        ).versionName
         RetrofitManager.resetConfig(NetConfig().apply {
-            base = "https://niucube-api.qiniu.com/"
+            base = "https://niucube-api.qiniu.com"
+            converterFactory = QiniuJsonFactor.create()
+            okBuilder.addInterceptor(QiniuRequestInterceptor())
+                .addInterceptor(Form2JsonInterceptor())
+                .addInterceptor(logInterceptor)
         })
 
 // 初始化使用的第三方二维码扫描库，与 QNRTC 无关，请忽略
