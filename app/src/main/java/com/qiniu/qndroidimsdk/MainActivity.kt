@@ -74,6 +74,7 @@ class MainActivity : AppCompatActivity() {
 
                     val body =
                         "{\"group_id\":\"${mRoomName}\"}".toRequestBody("application/json".toMediaType())
+
                     val response = async<Response>(Dispatchers.IO) {
                         val response =
                             RetrofitManager.post("https://im-test.qiniuapi.com/v1/mock/group", body)
@@ -83,11 +84,10 @@ class MainActivity : AppCompatActivity() {
                     val jsonStr = response.body?.string()
                     Log.d("mRoomName", "   jsonStr  " + jsonStr)
 
-
                     if (response.code == 200) {
-                        val json = JsonUtils.parseObject(jsonStr, HttpDate::class.java)?.data
-                        UserInfoManager.mIMGroup = json
-                        Log.d("mRoomName", "   groupInfo.im_group_id  " + json?.group_id)
+                        val groupMode = JsonUtils.parseObject(jsonStr, HttpDate::class.java)?.data
+                        UserInfoManager.mLoginToken?.imConfig?.imGroupId = groupMode?.im_group_id.toString()
+                        Log.d("mRoomName", "   groupInfo.im_group_id  " + groupMode?.group_id)
                         val intent = Intent(this@MainActivity, RoomActivity::class.java)
                         intent.putExtra("roomToken", room_token_edit_text!!.text.toString())
                         startActivity(intent)
@@ -129,7 +129,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private val isPermissionOK: Boolean
-        private get() {
+        get() {
             val checker = PermissionChecker(this)
             return Build.VERSION.SDK_INT < Build.VERSION_CODES.M || checker.checkPermission()
         }

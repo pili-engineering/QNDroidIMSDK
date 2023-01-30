@@ -25,32 +25,12 @@ class SplashActivity : AppCompatActivity() {
         RxPermissions(this).request(
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                    Manifest.permission.CAMERA,
+            Manifest.permission.CAMERA,
             Manifest.permission.RECORD_AUDIO
         ).doFinally {
-            lifecycleScope.launch(Dispatchers.Main) {
-
-                if (UserInfoManager.getUserId().isEmpty() || (UserInfoManager.mIMUser?.im_username
-                        ?: "").isEmpty()
-                ) {
-                    val i = Intent(this@SplashActivity, LoginActivity::class.java)
-                    startActivity(i)
-                    return@launch
-                }
-                val code = QNIMClient.fastSignInByName(UserInfoManager.mIMUser!!.im_username,UserInfoManager.mIMUser!!.im_password)
-                if(code == BMXErrorCode.NoError){
-                    val i = Intent(this@SplashActivity,MainActivity::class.java)
-                    startActivity(i)
-                }else{
-                    val i = Intent(this@SplashActivity, LoginActivity::class.java)
-                    startActivity(i)
-                }
-            }
-
-        }
-            .subscribe {
-
-
+            val i = Intent(this@SplashActivity, LoginActivity::class.java)
+            startActivity(i)
+        }.subscribe {
         }
     }
 }

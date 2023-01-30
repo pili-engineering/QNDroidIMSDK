@@ -1,6 +1,5 @@
 package com.qiniu.qndroidimsdk.mode;
 
-
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -17,6 +16,7 @@ public class UserInfo implements Parcelable, Serializable {
     public UserInfo() {
 
     }
+
     protected UserInfo(Parcel in) {
         accountId = in.readString();
         nickname = in.readString();

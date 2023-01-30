@@ -14,7 +14,6 @@ import com.qiniu.qndroidimsdk.UserInfoManager
 import com.qiniu.qndroidimsdk.pubchat.InputMsgReceiver
 import im.floo.BMXDataCallBack
 import im.floo.floolib.BMXConversation
-import im.floo.floolib.BMXConversationList
 import im.floo.floolib.BMXErrorCode
 import im.floo.floolib.BMXMessageList
 import kotlinx.android.synthetic.main.chat_fragment.*
@@ -23,7 +22,7 @@ import kotlinx.coroutines.launch
 
 class ChatRoomFragment : Fragment() {
 
-
+    private val groupID by lazy { UserInfoManager.mLoginToken!!.imConfig.imGroupId.toLong() }
     private val mInputMsgReceiver by lazy {
         InputMsgReceiver(requireContext())
     }
@@ -61,16 +60,7 @@ class ChatRoomFragment : Fragment() {
                 .show(childFragmentManager, "RoomInputDialog")
 
 
-//            QNIMClient.getChatManager().getAllConversations(object :
-//                BMXDataCallBack<BMXConversationList> {
-//                override fun onResult(p0: BMXErrorCode?, p1: BMXConversationList) {
-//                    for (i in 0..p1.size()){
-//
-//                    }
-//                }
-//            })
-
-            QNIMClient.getChatManager().openConversation(UserInfoManager.mIMGroup!!.im_group_id,
+            QNIMClient.getChatManager().openConversation(groupID,
                 BMXConversation.Type.Group,
                 false,
                 object : BMXDataCallBack<BMXConversation> {
@@ -78,13 +68,13 @@ class ChatRoomFragment : Fragment() {
                         QNIMClient.getChatManager().retrieveHistoryMessages(p1, 0, 100,
                             object : BMXDataCallBack<BMXMessageList> {
                                 override fun onResult(p0: BMXErrorCode?, msgs: BMXMessageList?) {
-                                    val size =msgs?.size()?:return;
-                                    Log.d("mjl","retrieveHistoryMessages"+size)
-                                    if(size<=0){
+                                    val size = msgs?.size() ?: return;
+                                    Log.d("mjl", "retrieveHistoryMessages" + size)
+                                    if (size <= 0) {
                                         return
                                     }
                                     for (i in 0 until size.toInt()) {
-                                        val msg =  msgs[i]
+                                        val msg = msgs[i]
                                         msg.fromId() //来自谁
                                         msg.attachment()
                                         msg.content()
@@ -99,20 +89,20 @@ class ChatRoomFragment : Fragment() {
 
         Log.d(
             "mRoomName",
-            " 加入聊天  groupInfo.im_group_id  " + UserInfoManager.mIMGroup!!.im_group_id
+            " 加入聊天  groupInfo.im_group_id  " + groupID
         )
         QNIMClient.getChatRoomManager().join(
-            UserInfoManager.mIMGroup!!.im_group_id
+            groupID
         ) { p0 ->
             if (p0 == BMXErrorCode.NoError || p0 == BMXErrorCode.GroupMemberExist) {
                 //  "加入聊天室成功".asToast()
-                Log.d("mRoomName", " 加入聊天  加入聊天室成功  " + UserInfoManager.mIMGroup!!.im_group_id)
+                Log.d("mRoomName", " 加入聊天  加入聊天室成功  " + groupID)
                 lifecycleScope.launch {
                     delay(1000)
                     mInputMsgReceiver.sendEnterMsg()
                 }
             } else {
-                Log.d("mRoomName", " 加入聊天    加入聊天室失  " + UserInfoManager.mIMGroup!!.im_group_id)
+                Log.d("mRoomName", " 加入聊天    加入聊天室失  " + groupID)
             }
         }
     }
@@ -120,7 +110,7 @@ class ChatRoomFragment : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         mInputMsgReceiver.sendQuitMsg()
-        QNIMClient.getChatRoomManager().leave(UserInfoManager.mIMGroup!!.im_group_id) {
+        QNIMClient.getChatRoomManager().leave(groupID) {
         }
     }
 }

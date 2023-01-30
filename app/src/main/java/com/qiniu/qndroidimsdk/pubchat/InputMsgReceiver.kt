@@ -6,7 +6,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
 import com.qiniu.droid.imsdk.QNIMClient
-import com.qiniu.qndroidimsdk.UserInfoManager
 import com.qiniu.qndroidimsdk.pubchat.msg.RtmTextMsg
 import im.floo.floolib.*
 import kotlinx.coroutines.Dispatchers
@@ -19,10 +18,10 @@ import com.qiniu.qndroidimsdk.pubchat.msg.RtmImgMsg
 import com.qiniu.qndroidimsdk.pubchat.msg.RtmMessage
 import com.qiniu.qndroidimsdk.pubchat.msg.RtmVoiceMsg
 import java.lang.Exception
-import android.os.Build
 import android.util.Log
 import androidx.core.content.FileProvider
 import com.hapi.mediapicker.ContentUriUtil
+import com.qiniu.qndroidimsdk.UserInfoManager
 import java.io.File
 
 
@@ -41,13 +40,13 @@ class InputMsgReceiver(val context: Context) : LifecycleObserver {
             percent: Int
         ) {
             super.onAttachmentStatusChanged(msg, error, percent)
-            var id = msg?.msgId()
+            val id = msg?.msgId()
             Log.d(
                 "mjl",
                 " onAttachmentStatusChanged ${id}  ${percent}"
             )
             GlobalScope.launch(Dispatchers.Main) {
-                PubChatMsgManager.onMsgAttachmentStatusChanged(id.toString(),percent)
+                PubChatMsgManager.onMsgAttachmentStatusChanged(id.toString(), percent)
             }
         }
 
@@ -61,11 +60,6 @@ class InputMsgReceiver(val context: Context) : LifecycleObserver {
             for (i in 0 until list.size().toInt()) {
                 list[i]?.let {
                     var msg: RtmMessage? = null
-
-                    //当前这个群
-                    if (it.toId() != UserInfoManager.mIMGroup!!.im_group_id) {
-                        return
-                    }
 
                     if (it.contentType() == BMXMessage.ContentType.Text) {
                         msg = JsonUtils.parseObject(it.content(), RtmTextMsg::class.java) ?: return
@@ -96,7 +90,7 @@ class InputMsgReceiver(val context: Context) : LifecycleObserver {
                         rtmVoiceMsg.url = Uri.fromFile(File(path))
                         rtmVoiceMsg.duration = at.duration();
                         msg = rtmVoiceMsg
-                        msg?.attachmentProcess=0
+                        msg.attachmentProcess = 0
                     }
 
                     msg?.msgId = it.msgId().toString()
@@ -117,14 +111,13 @@ class InputMsgReceiver(val context: Context) : LifecycleObserver {
         QNIMClient.getChatManager().addChatListener(mChatListener)
     }
 
-
     /**
      * 发公聊消息
      */
     fun buildMsg(msgEdit: String) {
         val pubChatMsgModel = PubChatMsgModel().apply {
-            senderId = UserInfoManager.mIMUser?.im_uid.toString()
-            senderName = UserInfoManager.mIMUser?.im_username
+            senderId = UserInfoManager.mLoginToken?.imConfig?.imUid.toString()
+            senderName = UserInfoManager.mLoginToken?.imConfig?.imUsername
             msgContent = msgEdit
         }
         val msg = RtmTextMsg(
@@ -133,17 +126,17 @@ class InputMsgReceiver(val context: Context) : LifecycleObserver {
             )
         )
         val imMsg = BMXMessage.createMessage(
-            UserInfoManager.mIMUser!!.im_uid,
-            UserInfoManager.mIMGroup!!.im_group_id,
+            UserInfoManager.mLoginToken!!.imConfig.imUid!!.toLong(),
+            UserInfoManager.mLoginToken!!.imConfig.imGroupId.toLong(),
             BMXMessage.MessageType.Group,
-            UserInfoManager.mIMGroup!!.im_group_id,
+            UserInfoManager.mLoginToken!!.imConfig.imGroupId.toLong(),
             JsonUtils.toJson(msg)
         )
-        imMsg.setSenderName(UserInfoManager.mIMUser?.im_username)
+        imMsg.setSenderName(UserInfoManager.mLoginToken?.imConfig?.imUsername)
         QNIMClient.sendMessage(imMsg)
-        msg.sendImName = UserInfoManager.mIMUser?.im_username
-        msg.toImId = UserInfoManager.mIMGroup!!.im_group_id.toString()
-        msg.sendImId = UserInfoManager.mIMUser!!.im_uid.toString()
+        msg.sendImName = UserInfoManager.mLoginToken?.imConfig?.imUsername
+        msg.toImId = UserInfoManager.mLoginToken?.imConfig?.imGroupId.toString()
+        msg.sendImId = UserInfoManager.mLoginToken?.imConfig?.imUid.toString()
         PubChatMsgManager.onNewMsg(msg)
     }
 
@@ -160,12 +153,12 @@ class InputMsgReceiver(val context: Context) : LifecycleObserver {
         val imageAttachment = BMXImageAttachment(filePath, size)
 
         val msg: BMXMessage = BMXMessage.createMessage(
-            UserInfoManager.mIMUser!!.im_uid,
-            UserInfoManager.mIMGroup!!.im_group_id,
+            UserInfoManager.mLoginToken!!.imConfig.imUid!!.toLong(),
+            UserInfoManager.mLoginToken!!.imConfig.imGroupId.toLong(),
             BMXMessage.MessageType.Group,
-            UserInfoManager.mIMGroup!!.im_group_id, imageAttachment
+            UserInfoManager.mLoginToken!!.imConfig.imGroupId.toLong(), imageAttachment
         )
-        msg.setSenderName(UserInfoManager.mIMUser?.im_username)
+        msg.setSenderName(UserInfoManager.mLoginToken?.imConfig?.imUsername)
         QNIMClient.sendMessage(msg)
 
         val rtmImgMsg = RtmImgMsg()
@@ -173,9 +166,9 @@ class InputMsgReceiver(val context: Context) : LifecycleObserver {
         rtmImgMsg.h = size.mHeight
         rtmImgMsg.w = size.mWidth
 
-        rtmImgMsg.sendImName = UserInfoManager.mIMUser?.im_username
-        rtmImgMsg.toImId = UserInfoManager.mIMGroup!!.im_group_id.toString()
-        rtmImgMsg.sendImId = UserInfoManager.mIMUser!!.im_uid.toString()
+        rtmImgMsg.sendImName = UserInfoManager.mLoginToken?.imConfig?.imUsername
+        rtmImgMsg.toImId = UserInfoManager.mLoginToken?.imConfig?.imGroupId.toString()
+        rtmImgMsg.sendImId = UserInfoManager.mLoginToken?.imConfig?.imUid.toString()
         rtmImgMsg.attachmentProcess = 100
         PubChatMsgManager.onNewMsg(rtmImgMsg)
     }
@@ -213,19 +206,19 @@ class InputMsgReceiver(val context: Context) : LifecycleObserver {
         val duration = getRingDuring(uri).toInt()
         val imageAttachment = BMXVoiceAttachment(filePath, duration)
         val msg: BMXMessage = BMXMessage.createMessage(
-            UserInfoManager.mIMUser!!.im_uid,
-            UserInfoManager.mIMGroup!!.im_group_id,
+            UserInfoManager.mLoginToken!!.imConfig.imUid!!.toLong(),
+            UserInfoManager.mLoginToken!!.imConfig.imGroupId.toLong(),
             BMXMessage.MessageType.Group,
-            UserInfoManager.mIMGroup!!.im_group_id, imageAttachment
+            UserInfoManager.mLoginToken!!.imConfig.imGroupId.toLong(), imageAttachment
         )
-        msg.setSenderName(UserInfoManager.mIMUser?.im_username)
+        msg.setSenderName(UserInfoManager.mLoginToken?.imConfig?.imUsername)
         QNIMClient.sendMessage(msg)
         val rtmVoiceMsg = RtmVoiceMsg()
         rtmVoiceMsg.url = uri
         rtmVoiceMsg.duration = duration
-        rtmVoiceMsg.sendImName = UserInfoManager.mIMUser?.im_username
-        rtmVoiceMsg.toImId = UserInfoManager.mIMGroup!!.im_group_id.toString()
-        rtmVoiceMsg.sendImId = UserInfoManager.mIMUser!!.im_uid.toString()
+        rtmVoiceMsg.sendImName = UserInfoManager.mLoginToken?.imConfig?.imUsername
+        rtmVoiceMsg.toImId = UserInfoManager.mLoginToken?.imConfig?.imGroupId.toString()
+        rtmVoiceMsg.sendImId = UserInfoManager.mLoginToken?.imConfig?.imUid.toString()
         rtmVoiceMsg.attachmentProcess = 100
         PubChatMsgManager.onNewMsg(rtmVoiceMsg)
 
@@ -234,8 +227,8 @@ class InputMsgReceiver(val context: Context) : LifecycleObserver {
 
     fun sendEnterMsg() {
         val pubMsg = PubChatWelCome().apply {
-            senderId = UserInfoManager.mIMUser?.im_uid.toString()
-            senderName = UserInfoManager.mIMUser?.im_username
+            senderId = UserInfoManager.mLoginToken?.imConfig?.imUid.toString()
+            senderName = UserInfoManager.mLoginToken?.imConfig?.imUsername
             msgContent = "进入了房间"
         }
         val msg = RtmTextMsg(
@@ -244,24 +237,24 @@ class InputMsgReceiver(val context: Context) : LifecycleObserver {
             )
         )
         val imMsg = BMXMessage.createMessage(
-            UserInfoManager.mIMUser!!.im_uid,
-            UserInfoManager.mIMGroup!!.im_group_id,
+            UserInfoManager.mLoginToken!!.imConfig.imUid!!.toLong(),
+            UserInfoManager.mLoginToken!!.imConfig.imGroupId.toLong(),
             BMXMessage.MessageType.Group,
-            UserInfoManager.mIMGroup!!.im_group_id,
+            UserInfoManager.mLoginToken!!.imConfig.imGroupId.toLong(),
             JsonUtils.toJson(msg)
         )
-        imMsg.setSenderName(UserInfoManager.mIMUser?.im_username)
+        imMsg.setSenderName(UserInfoManager.mLoginToken?.imConfig?.imUsername)
         QNIMClient.sendMessage(imMsg)
-        msg.sendImName = UserInfoManager.mIMUser?.im_username
-        msg.toImId = UserInfoManager.mIMGroup!!.im_group_id.toString()
-        msg.sendImId = UserInfoManager.mIMUser!!.im_uid.toString()
+        msg.sendImName = UserInfoManager.mLoginToken?.imConfig?.imUsername
+        msg.toImId = UserInfoManager.mLoginToken?.imConfig?.imGroupId.toString()
+        msg.sendImId = UserInfoManager.mLoginToken?.imConfig?.imUid.toString()
         PubChatMsgManager.onNewMsg(msg)
     }
 
     fun sendQuitMsg() {
         val pubMsg = PubChatQuitRoom().apply {
-            senderId = UserInfoManager.mIMUser?.im_uid.toString()
-            senderName = UserInfoManager.mIMUser?.im_username
+            senderId = UserInfoManager.mLoginToken?.imConfig?.imUid.toString()
+            senderName = UserInfoManager.mLoginToken?.imConfig?.imUsername
             msgContent = "退出了房间"
         }
         val msg = RtmTextMsg(
@@ -270,17 +263,17 @@ class InputMsgReceiver(val context: Context) : LifecycleObserver {
             )
         )
         val imMsg = BMXMessage.createMessage(
-            UserInfoManager.mIMUser!!.im_uid,
-            UserInfoManager.mIMGroup!!.im_group_id,
+            UserInfoManager.mLoginToken!!.imConfig.imUid!!.toLong(),
+            UserInfoManager.mLoginToken!!.imConfig.imGroupId.toLong(),
             BMXMessage.MessageType.Group,
-            UserInfoManager.mIMGroup!!.im_group_id,
+            UserInfoManager.mLoginToken!!.imConfig.imGroupId.toLong(),
             JsonUtils.toJson(msg)
         )
-        imMsg.setSenderName(UserInfoManager.mIMUser?.im_username)
+        imMsg.setSenderName(UserInfoManager.mLoginToken?.imConfig?.imUsername)
         QNIMClient.sendMessage(imMsg)
-        msg.sendImName = UserInfoManager.mIMUser?.im_username
-        msg.toImId = UserInfoManager.mIMGroup!!.im_group_id.toString()
-        msg.sendImId = UserInfoManager.mIMUser!!.im_uid.toString()
+        msg.sendImName = UserInfoManager.mLoginToken?.imConfig?.imUsername
+        msg.toImId = UserInfoManager.mLoginToken?.imConfig?.imGroupId.toString()
+        msg.sendImId = UserInfoManager.mLoginToken?.imConfig?.imUid.toString()
         PubChatMsgManager.onNewMsg(msg)
     }
 

@@ -1,6 +1,7 @@
 
 include ':app'
 include ':lib:lib_network'
+include ':lib:comp_network'
 include ':lib:bzuiEmoji'
 include(':lib:bzuicomp_bottomInput')
 rootProject.name = "QNDroidIMSDK"

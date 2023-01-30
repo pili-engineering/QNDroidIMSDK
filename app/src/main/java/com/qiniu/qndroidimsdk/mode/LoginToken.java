@@ -7,7 +7,7 @@ public class LoginToken implements Serializable {
 
     private String loginToken;
     private String accountId;
-
+    private ImConfig imConfig;
 
     public String getLoginToken() {
         return loginToken;
@@ -25,4 +25,11 @@ public class LoginToken implements Serializable {
         this.accountId = accountId;
     }
 
+    public ImConfig getImConfig() {
+        return imConfig;
+    }
+
+    public void setImConfig(ImConfig imConfig) {
+        this.imConfig = imConfig;
+    }
 }

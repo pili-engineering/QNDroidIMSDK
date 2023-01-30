@@ -21,6 +21,7 @@
         app:layout_constraintStart_toStartOf="parent"
         />
 
+
     <LinearLayout
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
@@ -38,8 +39,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@null"
-            android:hint="请输入用户名"
-            android:inputType="text"
+            android:hint="请输入手机号"
+            android:inputType="phone"
             android:textColorHint="#FF999999"
             android:textSize="14sp"
             android:layout_marginStart="12dp"
@@ -50,7 +51,6 @@
             android:layout_height="1dp"
             android:layout_marginTop="12dp"
             android:background="#EAEAEA" />
-
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -65,14 +65,11 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@null"
-                android:hint="请输入密码"
+                android:text="8888"
                 android:textColorHint="#FF999999"
-                android:textSize="14sp"
-                android:inputType="textPassword"
-                />
+                android:textSize="14sp" />
 
             <TextView
-                android:visibility="gone"
                 android:id="@+id/tvSmsTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -88,30 +85,17 @@
             android:layout_marginTop="12dp"
             android:background="#EAEAEA" />
 
+        <TextView
+            android:layout_marginTop="8dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Tips:新用户可直接通过验证码进行注册登录"
+            android:textColor="#FF999999"
+            android:textSize="11sp"
+            android:layout_marginStart="12dp"
+            />
 
     </LinearLayout>
-
-
-    <TextView
-        android:id="@+id/cbAgreement"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="13dp"
-        android:button="@null"
-
-        android:textColor="#007AFF"
-        android:drawablePadding="5dp"
-        android:minWidth="20dp"
-        android:textSize="11sp"
-        android:text="登录im"
-        android:gravity="center"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintHorizontal_chainStyle="packed"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/bt_login_login" />
-
-
 
     <TextView
         android:id="@+id/bt_login_login"
@@ -131,6 +115,4 @@
         app:layout_constraintHorizontal_bias="0.536"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>

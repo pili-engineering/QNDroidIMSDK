@@ -1,32 +1,42 @@
 package com.qiniu.qndroidimsdk
 
 import android.text.TextUtils
-import com.qiniu.qndroidimsdk.mode.IMGroup
-import com.qiniu.qndroidimsdk.mode.IMUser
 import com.qiniu.qndroidimsdk.mode.LoginToken
 import com.qiniu.qndroidimsdk.mode.UserInfo
 import com.qiniu.qndroidimsdk.pubchat.JsonUtils
-import com.qiniu.qndroidimsdk.util.SPConstant
 import com.qiniu.qndroidimsdk.util.SpUtil
 
-
 object UserInfoManager {
-    var mIMUser: IMUser? = null
-    var mIMGroup: IMGroup? = null
 
     private var uid = ""
-
+    private var mUserInfo: UserInfo? = null
+    var mLoginToken: LoginToken? = null
+        private set
 
     fun init() {
-        mIMUser = JsonUtils.parseObject(
-            SpUtil.get(SPConstant.User.SpName)?.readString(
-                SPConstant.User.KEY_USER_INFO
+        mUserInfo = JsonUtils.parseObject(
+            SpUtil.get(SpName)?.readString(
+                KEY_USER_INFO
             ) ?: "",
-            IMUser::class.java
-        ) as IMUser?
-        uid = mIMUser?.im_uid?.toString()?:""
+            UserInfo::class.java
+        ) as UserInfo?
+        uid = mUserInfo?.accountId ?: ""
+
+        mLoginToken = JsonUtils.parseObject(
+            SpUtil.get(SpName)?.readString(
+                KEY_USER_LOGIN_MODEL
+            ) ?: "",
+            LoginToken::class.java
+        ) as LoginToken?
+        mLoginToken?.let {
+            uid = it.accountId
+        }
     }
 
+
+    fun getUserInfo(): UserInfo? {
+        return mUserInfo
+    }
 
 
     /**
@@ -36,29 +46,57 @@ object UserInfoManager {
         return uid
     }
 
+    /**
+     * 快捷获取　token
+     */
+    fun getUserToken(): String {
+        return mLoginToken?.loginToken ?: ""
+    }
 
-    fun updateUserInfo(userInfo: IMUser) {
-        uid = mIMUser?.im_uid?.toString()?:""
-        mIMUser = userInfo
+    fun updateUserInfo(userInfo: UserInfo) {
+        uid = userInfo.accountId
+        mUserInfo = userInfo
         saveUserInfoToSp()
+
+    }
+
+    suspend fun updateLoginModel(loginToken: LoginToken) {
+        uid = loginToken.accountId
+        mLoginToken = loginToken
+        saveLoginInfoToSp()
+
     }
 
     //存sp
     private fun saveUserInfoToSp() {
-        mIMUser?.let {
-            SpUtil.get(SPConstant.User.SpName)
-                .saveData(SPConstant.User.KEY_USER_INFO, JsonUtils.toJson(it))
+        mUserInfo?.let {
+            SpUtil.get(SpName)
+                .saveData(KEY_USER_INFO, JsonUtils.toJson(it))
         }
     }
 
-
-    fun onLogout(toastStr:String="") {
-
+    private fun saveLoginInfoToSp() {
+        mLoginToken?.let {
+            SpUtil.get(SpName)
+                .saveData(KEY_USER_LOGIN_MODEL, JsonUtils.toJson(it))
+        }
     }
 
-    fun clearUser(){
-        SpUtil.get(SPConstant.User.SpName).clear()
+    fun hasLogin(): Boolean {
+        return !getUserId().isEmpty() && !TextUtils.isEmpty(
+            getUserToken()
+        )
+    }
+
+    fun clearUser() {
+        SpUtil.get(SpName).clear()
         uid = ""
-        mIMUser = null
+        mUserInfo = null
+        mLoginToken = null
     }
+
+    private var SpName = "config:user"
+    private val KEY_UID = "uid"
+    private val KEY_USER_INFO = "user_info"
+    private val KEY_USER_LOGIN_MODEL = "USER_LOGIN_MODEL"
 }
